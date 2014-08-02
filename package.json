@@ -2,7 +2,7 @@
   "name": "twoferchat",
   "version": "0.0.1",
   "description": "Why can't developers just chat?",
-  "reposityory": "github.com/teamtwofer/chat",
+  "repository": "github.com/teamtwofer/chat",
   "dependencies": {
     "express": "^4.6.1",
     "socket.io": "^1.0.6"

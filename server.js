@@ -20,6 +20,10 @@
     return res.sendfile('assets/javascript/application.js');
   });
 
+  app.get('/rooms/:name', function(req, res) {
+    return console.log('whoa, something happened!');
+  });
+
   io.on('connection', function(socket) {
     var room;
     console.log('a user connected');

@@ -10,6 +10,9 @@ app.get '/', (req, res) ->
 app.get '/application.js', (req, res) ->
   res.sendfile 'assets/javascript/application.js'
 
+app.get '/rooms/:name', (req, res) -> 
+  console.log 'whoa, something happened!'
+
 io.on 'connection', (socket) ->
   console.log 'a user connected'
   socket.on 'disconnect', ->
