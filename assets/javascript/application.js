@@ -49,7 +49,11 @@
       findButton = findRoomDOM.querySelector(".room-search");
       findForm = findRoomDOM.querySelector(".find-room");
       findForm.addEventListener("submit", function(evt) {
-        routeTo('room', document.querySelector(".input-room-name").value);
+        var room;
+        room = this.checkRoom(document.querySelector(".input-room-name").value);
+        if (room != null) {
+          routeTo('room', room);
+        }
         evt.preventDefault();
         return false;
       });

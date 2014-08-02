@@ -53,7 +53,9 @@ class FindRoom extends Model
     findForm = findRoomDOM.querySelector(".find-room")
 
     findForm.addEventListener "submit", (evt) ->
-      routeTo('room', document.querySelector(".input-room-name").value)
+      room = this.checkRoom(document.querySelector(".input-room-name").value)
+      if room?
+        routeTo('room', room)
       evt.preventDefault()
       return false
 

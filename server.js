@@ -40,7 +40,7 @@
     room = Chatroom.new_chatroom('potato');
     console.log("Room Name: " + room.name);
     console.log("Room Password: " + room.password);
-    return console.log("Room Validity: " + room.status.vlaid);
+    return console.log("Room Validity: " + room.status.valid);
   });
 
   http.listen(3000, function() {

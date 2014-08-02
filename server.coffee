@@ -27,7 +27,7 @@ io.on 'connection', (socket) ->
   room = Chatroom.new_chatroom 'potato'
   console.log "Room Name: #{room.name}"
   console.log "Room Password: #{room.password}"
-  console.log "Room Validity: #{room.status.vlaid}"
+  console.log "Room Validity: #{room.status.valid}"
 
 http.listen 3000, ->
   console.log 'listening on *:3000' 
