@@ -1,11 +1,18 @@
 {
   "name": "twoferchat",
-  "version": "0.0.1",
+  "version": "0.0.1-1",
   "description": "Why can't developers just chat?",
   "repository": "github.com/teamtwofer/chat",
   "dependencies": {
     "express": "^4.6.1",
     "socket.io": "^1.0.6",
     "body-parser": "^1.5.2"
+  },
+  "subdomain": "twoferchat",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
