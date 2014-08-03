@@ -42,21 +42,36 @@
       return "#!/find-room";
     };
 
+    FindRoom.prototype.checkRoom = function(roomName) {
+      var xhr;
+      xhr = new XMLHttpRequest();
+      xhr.open("POST", "/rooms");
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhr.send(JSON.stringify({
+        "room": roomName
+      }));
+      return xhr.onloadend = function(data) {
+        return console.log(this);
+      };
+    };
+
     FindRoom.prototype.render = function() {
       var findButton, findForm, findRoomDOM;
       findRoomDOM = this.template.content.querySelector(".room-finder").cloneNode(true);
       console.log(findRoomDOM);
       findButton = findRoomDOM.querySelector(".room-search");
       findForm = findRoomDOM.querySelector(".find-room");
-      findForm.addEventListener("submit", function(evt) {
-        var room;
-        room = this.checkRoom(document.querySelector(".input-room-name").value);
-        if (room != null) {
-          routeTo('room', room);
-        }
-        evt.preventDefault();
-        return false;
-      });
+      findForm.addEventListener("submit", (function(_this) {
+        return function(evt) {
+          var room;
+          evt.preventDefault();
+          room = _this.checkRoom(document.querySelector(".input-room-name").value);
+          if (room != null) {
+            routeTo('room', room);
+          }
+          return false;
+        };
+      })(this));
       return findRoomDOM;
     };
 

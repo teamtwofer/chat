@@ -1,8 +1,11 @@
 cs   = require 'coffee-script/register'
 app  = require('express')()
+bp   = require('body-parser')
 http = require('http').Server(app)
 io   = require('socket.io')(http);
 Chatroom   = require('./chatroom').Chatroom;
+
+app.use(bp.json())
 
 app.get '/', (req, res) ->
   res.sendfile 'assets/html/index.html'
@@ -12,6 +15,11 @@ app.get '/application.js', (req, res) ->
 
 app.get '/rooms/:name', (req, res) -> 
   console.log 'whoa, something happened!'
+
+app.post '/rooms', (req, res) ->
+  console.log req.param("room")
+  res.json
+    "has-room": req.body
 
 io.on 'connection', (socket) ->
   console.log 'a user connected'
@@ -24,10 +32,10 @@ io.on 'connection', (socket) ->
       message: msg
       for:     'everyone'
 
-  room = Chatroom.new_chatroom 'potato'
-  console.log "Room Name: #{room.name}"
-  console.log "Room Password: #{room.password}"
-  console.log "Room Validity: #{room.status.valid}"
+  # room = Chatroom.newChatroom 'potato'
+  # console.log "Room Name: #{room.name}"
+  # console.log "Room Password: #{room.password}"
+  # console.log "Room Validity: #{room.status.valid}"
 
 http.listen 3000, ->
   console.log 'listening on *:3000' 

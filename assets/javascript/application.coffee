@@ -44,6 +44,17 @@ class FindRoom extends Model
     @template.createShadowRoot()
   path: -> 
     return "#!/find-room"
+  checkRoom: (roomName) ->
+    xhr = new XMLHttpRequest();
+    xhr.open("POST", "/rooms");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+     # send the collected data as JSON
+    xhr.send(JSON.stringify({"room":roomName}));
+    # xhr.send("room=#{roomName}")
+
+    xhr.onloadend = (data) ->
+      console.log(this)
   render: ->
     findRoomDOM = @template.content.querySelector(".room-finder").cloneNode(true)
     console.log findRoomDOM
@@ -52,11 +63,12 @@ class FindRoom extends Model
 
     findForm = findRoomDOM.querySelector(".find-room")
 
-    findForm.addEventListener "submit", (evt) ->
-      room = this.checkRoom(document.querySelector(".input-room-name").value)
+    findForm.addEventListener "submit", (evt) =>
+      evt.preventDefault()
+
+      room = @checkRoom(document.querySelector(".input-room-name").value)
       if room?
         routeTo('room', room)
-      evt.preventDefault()
       return false
 
     return findRoomDOM

@@ -1,9 +1,9 @@
-random_word_url = 'randomword.setgetgo.com'
+randomWordUrl = 'randomword.setgetgo.com'
 
 http = require 'http'
 
 options = 
-  host: random_word_url
+  host: randomWordUrl
   port: 80
   path: '/get.php'
 
@@ -27,7 +27,11 @@ class Chatroom
         valid:  false
         reason: 'There is already a room with this name.'
 
-  @new_chatroom: (name) ->
+  @hasRoom: (name) ->
+    Chatroom.rooms[name]? ? true : false
+
+
+  @newChatroom: (name) ->
     password = ''
     [1..3].forEach (i) ->
       http.get options, (resp) ->
