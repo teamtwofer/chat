@@ -66,7 +66,7 @@
     });
   });
 
-  http.listen(3000, function() {
+  app.listen(Number(process.env.PORT || 5000), function() {
     return console.log('listening on *:3000');
   });
 

@@ -62,5 +62,5 @@ io.on 'connection', (socket) ->
   # console.log "Room Password: #{room.password}"
   # console.log "Room Validity: #{room.status.valid}"
 
-http.listen 3000, ->
+app.listen (Number(process.env.PORT || 5000);), ->
   console.log 'listening on *:3000' 
