@@ -51,7 +51,8 @@
         "room": roomName
       }));
       return xhr.onloadend = function(data) {
-        return console.log(this);
+        console.log("Checked the room and this is the result: " + (JSON.stringify(this)));
+        return routeTo('room', JSON.parse(this.response).room.name);
       };
     };
 
@@ -65,11 +66,7 @@
         return function(evt) {
           var room;
           evt.preventDefault();
-          room = _this.checkRoom(document.querySelector(".input-room-name").value);
-          if (room != null) {
-            routeTo('room', room);
-          }
-          return false;
+          return room = _this.checkRoom(document.querySelector(".input-room-name").value);
         };
       })(this));
       return findRoomDOM;
@@ -82,7 +79,7 @@
   Room = (function(_super) {
     __extends(Room, _super);
 
-    function Room(roomName) {
+    function Room(type, roomName) {
       this.title = "Welcome to, " + roomName;
       this.template = document.querySelector('#room');
       this.template.createShadowRoot();
@@ -90,6 +87,7 @@
     }
 
     Room.prototype.path = function() {
+      console.log("Path is: #!/rooms/" + this.name);
       return "#!/rooms/" + this.name;
     };
 
@@ -110,6 +108,7 @@
       messages_holder = newRoomDom.querySelector('.messages-holder');
       new_message_template = document.querySelector('#new-message');
       new_message_template.createShadowRoot();
+      socket.emit('join-room', this.name);
       chatter.addEventListener('submit', function(e) {
         if (!(message.value.length < 1)) {
           socket.emit('chat message', {
@@ -171,9 +170,11 @@
     console.log("You want to go to: " + where + ".");
     TempModel = models[where];
     if (TempModel != null) {
+      console.log("The Match is: " + match);
       instance = new TempModel(where, match);
       contentYield.innerHTML = "";
       contentYield.appendChild(instance.render());
+      console.log(instance.title);
       return history.pushState(instance.stateObj(), instance.title, instance.path());
     } else {
       return console.log('you havent programmed that yet dawg');
@@ -183,15 +184,15 @@
   hash = window.location.hash;
 
   Object.keys(router).forEach(function(key) {
-    var match, route;
+    var matched, route;
     if (router.hasOwnProperty(key)) {
       route = router[key];
       console.log(route);
-      match = hash.match(route.matcher);
-      if ((match != null) && match.length > 0) {
+      matched = hash.match(route.matcher);
+      if ((matched != null) && matched.length > 0) {
         console.log("We made it to a page! " + route.name);
-        match.shift();
-        routeTo(key, match);
+        console.log("Match really is: " + matched);
+        routeTo(key, matched);
         return true;
       }
     }

@@ -25,7 +25,7 @@ app.post '/rooms', (req, res) ->
   roomExists = Chatroom.hasRoom(lookingFor)
 
   console.log("Does the room exist? #{roomExists}")
-  room = {}
+  console.log("Room name: #{lookingFor}")
 
   if !roomExists
     room = Chatroom.newChatroom lookingFor
@@ -37,16 +37,25 @@ app.post '/rooms', (req, res) ->
   res.json
     "room": room
 
+usersRooms={}
+
 io.on 'connection', (socket) ->
   console.log 'a user connected'
+  console.log socket.id
   socket.on 'disconnect', ->
     console.log 'user disconnected'
 
   socket.on 'chat message', (msg) ->
     console.log 'message: ' + msg
-    io.emit 'receive-chat', 
-      message: msg
-      for:     'everyone'
+
+    io.to(usersRooms[this.id]).emit 'receive-chat', 
+      message: msg.message
+
+  socket.on 'join-room', (room) ->
+    this.join(room)
+    console.log(room)
+    Chatroom.rooms[room].users.push(this.id)
+    usersRooms[this.id] = room
 
   # room = Chatroom.newChatroom 'potato'
   # console.log "Room Name: #{room.name}"

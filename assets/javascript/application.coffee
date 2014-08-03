@@ -32,7 +32,11 @@ class FindRoom extends Model
     # xhr.send("room=#{roomName}")
 
     xhr.onloadend = (data) ->
-      console.log(this)
+
+      console.log("Checked the room and this is the result: #{JSON.stringify(this)}")
+      # console.log("Also this: #{JSON.stringify(data)}")
+      routeTo('room', JSON.parse(this.response).room.name)
+
   render: ->
     findRoomDOM = @template.content.querySelector(".room-finder").cloneNode(true)
     console.log findRoomDOM
@@ -45,20 +49,21 @@ class FindRoom extends Model
       evt.preventDefault()
 
       room = @checkRoom(document.querySelector(".input-room-name").value)
-      if room?
-        routeTo('room', room)
-      return false
+      # if room?
+      #   routeTo('room', room)
+      # return false
 
     return findRoomDOM
 
 class Room extends Model
-  constructor: (roomName)->
+  constructor: (type, roomName)->
     @title = "Welcome to, #{roomName}"
     @template = document.querySelector '#room'
     @template.createShadowRoot()
 
     @name = roomName
   path: ->
+    console.log("Path is: #!/rooms/#{@name}")
     return "#!/rooms/#{@name}"
   stateObj: ->
     'room':
@@ -73,6 +78,8 @@ class Room extends Model
 
     new_message_template = document.querySelector '#new-message'
     new_message_template.createShadowRoot()
+
+    socket.emit('join-room', @name)
 
     chatter.addEventListener 'submit', (e) ->
       unless message.value.length < 1
@@ -123,10 +130,12 @@ routeTo = (where, match) ->
   console.log("You want to go to: #{where}.")
   TempModel = models[where]
   if TempModel?
+    console.log("The Match is: #{match}")
     instance = new TempModel(where, match)
     contentYield.innerHTML = ""
 
     contentYield.appendChild instance.render()
+    console.log(instance.title)
     history.pushState instance.stateObj(), instance.title, instance.path()
   else
     console.log 'you havent programmed that yet dawg'
@@ -139,12 +148,13 @@ Object.keys(router).forEach (key) ->
   if router.hasOwnProperty(key)
     route = router[key]
     console.log(route)
-    match = hash.match route.matcher
-    if match? && match.length > 0
+    matched = hash.match route.matcher
+    if matched? && matched.length > 0
       # history.pushState {thingie: true}, 'Whoa we are on a page!', "#!#{route.path}"
       console.log("We made it to a page! #{route.name}")
-      match.shift()
-      routeTo key, match
+      # match.shift()
+      console.log("Match really is: #{matched}")
+      routeTo key, matched
       return true
 
 

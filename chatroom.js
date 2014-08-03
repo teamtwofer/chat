@@ -19,6 +19,7 @@
       if ((password != null) && (name != null)) {
         this.name = name;
         this.password = password;
+        this.users = [];
         this.status = {
           valid: true
         };

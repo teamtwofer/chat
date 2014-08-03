@@ -14,6 +14,7 @@ class Chatroom
     if password? && name?
       @name     = name
       @password = password
+      @users    = []
       @status   = 
         valid: true
       console.log 'New Chatroom made'
