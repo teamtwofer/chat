@@ -1,25 +1,3 @@
-# socket  = io()
-# chatter = document.querySelector '.message-form'
-# message = document.querySelector '.message-input'
-# messages_holder = document.querySelector '.messages-holder'
-
-# new_message_template = document.querySelector '#new-message'
-# new_message_template.createShadowRoot()
-
-# chatter.addEventListener 'submit', (e) ->
-#   unless message.value.length < 1
-#     socket.emit 'chat message', message.value
-#     message.value = ''
-#   e.preventDefault()
-#   return false
-
-# socket.on 'receive-chat', (message_text) ->
-#   console.log "is this working?"
-#   new_message = new_message_template.content
-#                   .querySelector(".message").cloneNode(true);
-#   console.log message_text
-#   new_message.textContent = message_text.message
-#   messages_holder.appendChild new_message 
 class Model 
   # a model has to have 4 things:
   # 1) A stateObj method
@@ -76,10 +54,46 @@ class FindRoom extends Model
 class Room extends Model
   constructor: (roomName)->
     @title = "Welcome to, #{roomName}"
-    @template = '#room'
+    @template = document.querySelector '#room'
+    @template.createShadowRoot()
+
     @name = roomName
   path: ->
     return "#!/rooms/#{@name}"
+  stateObj: ->
+    'room':
+      'name': @name
+  render: ->
+    newRoomDom = @template.content.querySelector(".chatroom")
+
+    socket  = io()
+    chatter = newRoomDom.querySelector '.message-form'
+    message = newRoomDom.querySelector '.message-input'
+    messages_holder = newRoomDom.querySelector '.messages-holder'
+
+    new_message_template = document.querySelector '#new-message'
+    new_message_template.createShadowRoot()
+
+    chatter.addEventListener 'submit', (e) ->
+      unless message.value.length < 1
+        socket.emit 'chat message', 
+          'message':  message.value,
+          'chatroom': @name
+        
+        message.value = ''
+      e.preventDefault()
+      return false
+
+    socket.on 'receive-chat', (message_text) ->
+      console.log "is this working?"
+      new_message = new_message_template.content
+                      .querySelector(".message").cloneNode(true);
+      console.log message_text
+      new_message.textContent = message_text.message
+      messages_holder.appendChild new_message 
+
+
+    return newRoomDom
 
 router = 
   'root': 

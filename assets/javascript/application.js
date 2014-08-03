@@ -84,12 +84,52 @@
 
     function Room(roomName) {
       this.title = "Welcome to, " + roomName;
-      this.template = '#room';
+      this.template = document.querySelector('#room');
+      this.template.createShadowRoot();
       this.name = roomName;
     }
 
     Room.prototype.path = function() {
       return "#!/rooms/" + this.name;
+    };
+
+    Room.prototype.stateObj = function() {
+      return {
+        'room': {
+          'name': this.name
+        }
+      };
+    };
+
+    Room.prototype.render = function() {
+      var chatter, message, messages_holder, newRoomDom, new_message_template, socket;
+      newRoomDom = this.template.content.querySelector(".chatroom");
+      socket = io();
+      chatter = newRoomDom.querySelector('.message-form');
+      message = newRoomDom.querySelector('.message-input');
+      messages_holder = newRoomDom.querySelector('.messages-holder');
+      new_message_template = document.querySelector('#new-message');
+      new_message_template.createShadowRoot();
+      chatter.addEventListener('submit', function(e) {
+        if (!(message.value.length < 1)) {
+          socket.emit('chat message', {
+            'message': message.value,
+            'chatroom': this.name
+          });
+          message.value = '';
+        }
+        e.preventDefault();
+        return false;
+      });
+      socket.on('receive-chat', function(message_text) {
+        var new_message;
+        console.log("is this working?");
+        new_message = new_message_template.content.querySelector(".message").cloneNode(true);
+        console.log(message_text);
+        new_message.textContent = message_text.message;
+        return messages_holder.appendChild(new_message);
+      });
+      return newRoomDom;
     };
 
     return Room;
