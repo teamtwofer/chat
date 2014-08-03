@@ -73,7 +73,8 @@ class Room extends Model
 
     socket  = io()
     chatter = newRoomDom.querySelector '.message-form'
-    message = newRoomDom.querySelector '.message-input'
+    message_input = newRoomDom.querySelector '.message-input'
+    message = newRoomDom.querySelector '.message-field'
     messages_holder = newRoomDom.querySelector '.messages-holder'
 
     new_message_template = document.querySelector '#new-message'
@@ -82,12 +83,15 @@ class Room extends Model
     socket.emit('join-room', @name)
 
     chatter.addEventListener 'submit', (e) ->
+      message.value = message_input.innerHTML;
+
       unless message.value.length < 1
         socket.emit 'chat message', 
           'message':  message.value,
           'chatroom': @name
         
         message.value = ''
+        message_input.innerHTML = ''
       e.preventDefault()
       return false
 
@@ -96,7 +100,7 @@ class Room extends Model
       new_message = new_message_template.content
                       .querySelector(".message").cloneNode(true);
       console.log message_text
-      new_message.textContent = message_text.message
+      new_message.querySelector(".message-body").textContent = message_text.message
       messages_holder.appendChild new_message 
 
 

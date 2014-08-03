@@ -1,18 +1,20 @@
 # cs   = require 'coffee-script/register'
-app  = require('express')()
+express  = require('express')
+app = express()
 bp   = require('body-parser')
 http = require('http').Server(app)
-io   = require('socket.io')(http);
-Chatroom = require('./chatroom').Chatroom;
+io   = require('socket.io')(http)
+Chatroom = require('./chatroom').Chatroom
 
 app.use(bp.json())
+
+app.use("/assets", express.static(__dirname + '/assets'));
 
 app.get '/', (req, res) ->
   res.sendfile 'assets/html/index.html'
 
 app.get '/application.js', (req, res) ->
   res.sendfile 'assets/javascript/application.js'
-
 
 app.get '/rooms/:name', (req, res) -> 
   console.log 'whoa, something happened!'
