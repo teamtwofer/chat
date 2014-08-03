@@ -3,7 +3,7 @@ app  = require('express')()
 bp   = require('body-parser')
 http = require('http').Server(app)
 io   = require('socket.io')(http);
-Chatroom   = require('./chatroom').Chatroom;
+Chatroom = require('./chatroom').Chatroom;
 
 app.use(bp.json())
 
@@ -13,13 +13,29 @@ app.get '/', (req, res) ->
 app.get '/application.js', (req, res) ->
   res.sendfile 'assets/javascript/application.js'
 
+
 app.get '/rooms/:name', (req, res) -> 
   console.log 'whoa, something happened!'
 
 app.post '/rooms', (req, res) ->
   console.log req.param("room")
+
+  lookingFor = req.body.room
+
+  roomExists = Chatroom.hasRoom(lookingFor)
+
+  console.log("Does the room exist? #{roomExists}")
+  room = {}
+
+  if !roomExists
+    room = Chatroom.newChatroom lookingFor
+  else
+    room = Chatroom.rooms[lookingFor]
+
+  console.log "The rooms are: #{JSON.stringify(Chatroom.rooms[room.name])}"
+
   res.json
-    "has-room": req.body
+    "room": room
 
 io.on 'connection', (socket) ->
   console.log 'a user connected'

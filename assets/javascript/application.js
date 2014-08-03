@@ -84,7 +84,13 @@
 
     function Room(roomName) {
       this.title = "Welcome to, " + roomName;
+      this.template = '#room';
+      this.name = roomName;
     }
+
+    Room.prototype.path = function() {
+      return "#!/rooms/" + this.name;
+    };
 
     return Room;
 
@@ -114,21 +120,21 @@
 
   models = {
     'root': FindRoom,
-    'find-room': FindRoom
+    'find-room': FindRoom,
+    'room': Room
   };
 
   contentYield = document.querySelector(".yield");
 
   routeTo = function(where, match) {
     var TempModel, instance;
-    console.log(where);
+    console.log("You want to go to: " + where + ".");
     TempModel = models[where];
     if (TempModel != null) {
       instance = new TempModel(where, match);
       contentYield.innerHTML = "";
       contentYield.appendChild(instance.render());
-      history.pushState(instance.stateObj(), instance.title, instance.path());
-      return console.log(instance.render());
+      return history.pushState(instance.stateObj(), instance.title, instance.path());
     } else {
       return console.log('you havent programmed that yet dawg');
     }

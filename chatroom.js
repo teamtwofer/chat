@@ -16,7 +16,7 @@
     Chatroom.rooms = {};
 
     function Chatroom(name, password) {
-      if ((password == null) || (name == null)) {
+      if ((password != null) && (name != null)) {
         this.name = name;
         this.password = password;
         this.status = {
@@ -29,7 +29,7 @@
           reason: 'A Room Must have a Password and Name.'
         };
       }
-      if (Chatroom.rooms[room.name] != null) {
+      if (Chatroom.rooms[this.name] != null) {
         this.status = {
           valid: false,
           reason: 'There is already a room with this name.'
@@ -38,36 +38,21 @@
     }
 
     Chatroom.hasRoom = function(name) {
-      var _ref;
-      return (_ref = Chatroom.rooms[name] != null) != null ? _ref : {
-        "true": false
-      };
+      console.log("Chatroom.rooms[name] = " + Chatroom.rooms[name]);
+      if (Chatroom.rooms[name] != null) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     Chatroom.newChatroom = function(name) {
-      var password;
+      var password, room;
       password = '';
-      return [1, 2, 3].forEach(function(i) {
-        return http.get(options, function(resp) {
-          resp.on('data', function(chunk) {
-            console.log('BODY: ' + chunk);
-            return password += chunk;
-          });
-          return resp.on('end', function() {
-            var room;
-            if (i === 3) {
-              room = new Chatroom(name, password);
-              if (room.status.valid === true) {
-                Chatroom.rooms[room.name] = room;
-                console.log(room.status.reason);
-              } else {
-
-              }
-              return room;
-            }
-          });
-        });
-      });
+      console.log("Creating a new chatroom!");
+      room = new Chatroom(name, "potato");
+      console.log("room = " + name);
+      return Chatroom.rooms[room.name] = room;
     };
 
     return Chatroom;

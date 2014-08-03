@@ -45,8 +45,8 @@ class FindRoom extends Model
   path: -> 
     return "#!/find-room"
   checkRoom: (roomName) ->
-    xhr = new XMLHttpRequest();
-    xhr.open("POST", "/rooms");
+    xhr = new XMLHttpRequest()
+    xhr.open("POST", "/rooms")
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
      # send the collected data as JSON
@@ -76,8 +76,12 @@ class FindRoom extends Model
 class Room extends Model
   constructor: (roomName)->
     @title = "Welcome to, #{roomName}"
+    @template = '#room'
+    @name = roomName
+  path: ->
+    return "#!/rooms/#{@name}"
 
-router =
+router = 
   'root': 
     'path': ''
     'matcher': /^\/?$/
@@ -97,11 +101,12 @@ router =
 models =
   'root':      FindRoom
   'find-room': FindRoom
+  'room':      Room
 
 contentYield = document.querySelector ".yield"
 
 routeTo = (where, match) ->
-  console.log(where)
+  console.log("You want to go to: #{where}.")
   TempModel = models[where]
   if TempModel?
     instance = new TempModel(where, match)
@@ -109,9 +114,8 @@ routeTo = (where, match) ->
 
     contentYield.appendChild instance.render()
     history.pushState instance.stateObj(), instance.title, instance.path()
-    console.log instance.render()
   else
-    console.log('you havent programmed that yet dawg')
+    console.log 'you havent programmed that yet dawg'
 
 # window.router = router
 

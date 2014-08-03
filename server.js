@@ -29,9 +29,20 @@
   });
 
   app.post('/rooms', function(req, res) {
+    var lookingFor, room, roomExists;
     console.log(req.param("room"));
+    lookingFor = req.body.room;
+    roomExists = Chatroom.hasRoom(lookingFor);
+    console.log("Does the room exist? " + roomExists);
+    room = {};
+    if (!roomExists) {
+      room = Chatroom.newChatroom(lookingFor);
+    } else {
+      room = Chatroom.rooms[lookingFor];
+    }
+    console.log("The rooms are: " + (JSON.stringify(Chatroom.rooms[room.name])));
     return res.json({
-      "has-room": req.body
+      "room": room
     });
   });
 

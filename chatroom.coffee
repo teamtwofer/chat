@@ -11,7 +11,7 @@ options =
 class Chatroom
   @rooms = {}
   constructor: (name, password)->
-    if !password? || !name?
+    if password? && name?
       @name     = name
       @password = password
       @status   = 
@@ -21,32 +21,25 @@ class Chatroom
       @status = 
         valid:  false
         reason: 'A Room Must have a Password and Name.'
-    if Chatroom.rooms[room.name]?
+    if Chatroom.rooms[@name]?
       # there's already a chatroom with this name
       @status = 
         valid:  false
         reason: 'There is already a room with this name.'
 
   @hasRoom: (name) ->
-    Chatroom.rooms[name]? ? true : false
-
+    console.log("Chatroom.rooms[name] = #{Chatroom.rooms[name]}")
+    if Chatroom.rooms[name]?
+      return true
+    else 
+      return false
 
   @newChatroom: (name) ->
     password = ''
-    [1..3].forEach (i) ->
-      http.get options, (resp) ->
-        resp.on 'data', (chunk) ->
-          console.log('BODY: ' + chunk);
-          password += chunk
-        resp.on 'end', ->
-          if i == 3
-            room = new Chatroom name, password
-
-            if room.status.valid == true
-              Chatroom.rooms[room.name] = room
-              console.log room.status.reason
-            else 
-            return room
+    console.log("Creating a new chatroom!")
+    room = new Chatroom(name, "potato")
+    console.log("room = #{name}")
+    Chatroom.rooms[room.name] = room
 
 
 
