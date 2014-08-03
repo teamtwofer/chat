@@ -3,6 +3,12 @@
   <head>
     <!-- <title>Socket.IO chat</title> -->
   </head>
+  <script type="text/javascript">
+  HTMLElement.prototype.createShadowRoot = HTMLElement.prototype.webkitCreateShadowRoot ||
+                                           HTMLElement.prototype.mozCreateShadowRoot ||
+                                           HTMLElement.prototype.createShadowRoot;
+  </script>
+
   <body>
     <main class="yield">
       
