@@ -12,11 +12,6 @@
 
   Chatroom = require('./chatroom').Chatroom;
 
-  io.configure(function() {
-    io.set("transports", ["xhr-polling"]);
-    return io.set("polling duration", 10);
-  });
-
   app.use(bp.json());
 
   app.get('/', function(req, res) {

@@ -5,11 +5,6 @@ http = require('http').Server(app)
 io   = require('socket.io')(http);
 Chatroom = require('./chatroom').Chatroom;
 
-io.configure ->
-  io.set("transports", ["xhr-polling"]);
-  io.set("polling duration", 10);
-
-
 app.use(bp.json())
 
 app.get '/', (req, res) ->
@@ -62,7 +57,7 @@ io.on 'connection', (socket) ->
     Chatroom.rooms[room].users.push(this.id)
     usersRooms[this.id] = room
     # small change to restart heroku
-
+    
 
   # room = Chatroom.newChatroom 'potato'
   # console.log "Room Name: #{room.name}"
