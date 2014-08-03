@@ -1,4 +1,4 @@
-cs   = require 'coffee-script/register'
+# cs   = require 'coffee-script/register'
 app  = require('express')()
 bp   = require('body-parser')
 http = require('http').Server(app)
