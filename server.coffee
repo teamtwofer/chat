@@ -56,6 +56,8 @@ io.on 'connection', (socket) ->
     console.log(room)
     Chatroom.rooms[room].users.push(this.id)
     usersRooms[this.id] = room
+    # small change to restart heroku
+    
 
   # room = Chatroom.newChatroom 'potato'
   # console.log "Room Name: #{room.name}"
