@@ -12,6 +12,8 @@
 
   Chatroom = require('./chatroom').Chatroom;
 
+  io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']);
+
   app.use(bp.json());
 
   app.get('/', function(req, res) {

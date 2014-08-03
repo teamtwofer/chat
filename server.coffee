@@ -5,6 +5,13 @@ http = require('http').Server(app)
 io   = require('socket.io')(http);
 Chatroom = require('./chatroom').Chatroom;
 
+io.set('transports', ['websocket', 
+                  'flashsocket', 
+                  'htmlfile', 
+                  'xhr-polling', 
+                  'jsonp-polling', 
+                  'polling']);
+
 app.use(bp.json())
 
 app.get '/', (req, res) ->
