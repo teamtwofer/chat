@@ -1,6 +1,6 @@
 {
   "name": "twoferchat",
-  "version": "0.0.1-1",
+  "version": "0.0.1-2",
   "description": "Why can't developers just chat?",
   "repository": "github.com/teamtwofer/chat",
   "dependencies": {
