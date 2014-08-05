@@ -151,7 +151,9 @@ class Room extends Model
 
       message_body.innerHTML = tmpMessage
 
-      message_body.querySelector(".message:last-child").scrollIntoView()
+      lastMessage = message_body.querySelector(".message:last-child")
+
+      lastMessage.scrollIntoView()
 
       # message_body.querySelectorAll("script").forEach (element, index, array)->
       #   message_body.removeChild(this)
