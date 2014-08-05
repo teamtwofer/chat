@@ -166,7 +166,7 @@
       this.chatter.addEventListener('submit', this.submitForm);
       this.socket.on('receive-chat', (function(_this) {
         return function(message_text) {
-          var image_paths, message_body, new_message, tmpMessage, urlRegex;
+          var body, height, html, image_paths, message_body, new_message, tmpMessage, urlRegex;
           console.log("is this working?");
           new_message = _this.new_message_template.content.querySelector(".message").cloneNode(true);
           console.log(message_text);
@@ -190,7 +190,10 @@
           new_message.querySelector(".message-author").textContent = message_text.name;
           new_message.querySelector(".message-author").style.color = message_text.color;
           _this.messages_holder.appendChild(new_message);
-          return window.scrollTo(0, window.innerHeight);
+          body = document.body;
+          html = document.documentElement;
+          height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+          return window.scrollTo(0, height);
         };
       })(this));
       return this.newRoomDom;

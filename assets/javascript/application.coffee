@@ -163,7 +163,12 @@ class Room extends Model
       new_message.querySelector(".message-author").style.color = message_text.color
       @messages_holder.appendChild new_message 
 
-      window.scrollTo(0, window.innerHeight)
+      body = document.body
+      html = document.documentElement
+
+      height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+      window.scrollTo(0, height)
 
 
     return @newRoomDom
