@@ -80,7 +80,12 @@
         Chatroom.newChatroom(room);
       }
       Chatroom.rooms[room].users.push(this.id);
-      return usersRooms[this.id] = room;
+      usersRooms[this.id] = room;
+      return io.to(usersRooms[this.id]).emit('receive-chat', {
+        color: "#000",
+        name: "system",
+        message: "A User Has Joined the Chatroom"
+      });
     });
   });
 

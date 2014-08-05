@@ -145,7 +145,7 @@
     };
 
     Room.prototype.render = function() {
-      var isShiftDown;
+      var isShiftDown, unreadMessages, userIsFocused;
       Notification.requestPermission();
       this.socket.emit('join-room', this.name);
       isShiftDown = false;
@@ -165,9 +165,38 @@
         }
       });
       this.chatter.addEventListener('submit', this.submitForm);
+      userIsFocused = true;
+      unreadMessages = false;
+      window.onblur = function() {
+        userIsFocused = false;
+        return console.log("user is unfocused");
+      };
+      window.onfocus = (function(_this) {
+        return function() {
+          userIsFocused = true;
+          unreadMessages = false;
+          console.log("user is focused");
+          return document.title = "Twofer Chat " + _this.name;
+        };
+      })(this);
+      setInterval((function(_this) {
+        return function() {
+          if (!userIsFocused && unreadMessages) {
+            console.log(true);
+            if (document.title === "You have unread messages") {
+              return document.title = "Twofer Chat " + _this.name;
+            } else {
+              return document.title = "You have unread messages";
+            }
+          }
+        };
+      })(this), 500);
       this.socket.on('receive-chat', (function(_this) {
         return function(message_text) {
           var body, height, html, image_paths, message_body, new_message, notification, tmpMessage, urlRegex;
+          if (!userIsFocused) {
+            unreadMessages = true;
+          }
           console.log("is this working?");
           new_message = _this.new_message_template.content.querySelector(".message").cloneNode(true);
           console.log(message_text);

@@ -128,7 +128,34 @@ class Room extends Model
         isShiftDown = false
 
     @chatter.addEventListener 'submit',  @submitForm
+
+    userIsFocused  = true
+    unreadMessages = false
+    window.onblur = () ->
+      userIsFocused = false
+      console.log("user is unfocused")
+    
+    window.onfocus = () =>
+      userIsFocused  = true
+      unreadMessages = false
+      console.log("user is focused")
+      document.title = "Twofer Chat #{@name}"
+
+    setInterval( () =>
+      # console.log("unread messages")
+      if !userIsFocused && unreadMessages
+        console.log(true)
+        if document.title == "You have unread messages"
+          document.title = "Twofer Chat #{@name}"
+        else
+          document.title = "You have unread messages"
+        # do thing
+    ,500)
+
     @socket.on 'receive-chat', (message_text) =>
+      if !userIsFocused
+        unreadMessages = true
+
       console.log "is this working?"
       new_message = @new_message_template.content
                       .querySelector(".message").cloneNode(true);
@@ -172,7 +199,6 @@ class Room extends Model
       if message_text.name != @message_name.value
         notification = new Notification "#{@message_name.value} says...", 
           body: tmpMessage  
-        
 
 
     return @newRoomDom

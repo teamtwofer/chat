@@ -68,6 +68,11 @@ io.on 'connection', (socket) ->
       Chatroom.newChatroom room
     Chatroom.rooms[room].users.push(this.id)
     usersRooms[this.id] = room
+
+    io.to(usersRooms[this.id]).emit 'receive-chat',
+      color:   "#000"
+      name:    "system"
+      message: "A User Has Joined the Chatroom"
     # small change to restart heroku
     
 
