@@ -166,7 +166,7 @@
       this.chatter.addEventListener('submit', this.submitForm);
       this.socket.on('receive-chat', (function(_this) {
         return function(message_text) {
-          var image_paths, lastMessage, message_body, new_message, tmpMessage, urlRegex;
+          var image_paths, lastMessages, message_body, new_message, tmpMessage, urlRegex;
           console.log("is this working?");
           new_message = _this.new_message_template.content.querySelector(".message").cloneNode(true);
           console.log(message_text);
@@ -187,8 +187,8 @@
           });
           message_body = new_message.querySelector(".message-body");
           message_body.innerHTML = tmpMessage;
-          lastMessage = message_body.querySelector(".message:last-child");
-          lastMessage.scrollIntoView();
+          lastMessages = message_body.querySelectorAll(".message");
+          lastMessage[lastMessages.length - 1].scrollIntoView();
           new_message.querySelector(".message-author").textContent = message_text.name;
           new_message.querySelector(".message-author").style.color = message_text.color;
           return _this.messages_holder.appendChild(new_message);
