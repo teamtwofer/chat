@@ -57,8 +57,9 @@
       return console.log('user disconnected');
     });
     socket.on('chat message', function(msg) {
-      console.log('message: ' + msg);
+      console.log(msg);
       return io.to(usersRooms[this.id]).emit('receive-chat', {
+        color: msg.color,
         name: msg.name,
         message: msg.message
       });

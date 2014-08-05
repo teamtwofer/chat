@@ -74,6 +74,9 @@ class Room extends Model
 
     @name = roomName
 
+    @your_name = "Nobody"
+    @your_color = "#006699"
+
     @socket  = io()
     @newRoomDom = @template.content.querySelector(".chatroom").cloneNode(true)
 
@@ -82,9 +85,21 @@ class Room extends Model
     @message =         @newRoomDom.querySelector '.message-field'
     @messages_holder = @newRoomDom.querySelector '.messages-holder'
     @message_name =    @newRoomDom.querySelector '.message-name'
+    @message_color =   @newRoomDom.querySelector '.message-color'
 
     @new_message_template = document.querySelector '#new-message'
     @new_message_template.createShadowRoot()
+
+    xhr = new XMLHttpRequest()
+    xhr.overrideMimeType("application/json");
+    xhr.open('GET', '/assets/colors.json', true);
+    xhr.onreadystatechange = () =>
+      if (xhr.readyState == 4)
+        data = JSON.parse(xhr.responseText)
+        number = Math.floor(Math.random() * data.colors.length);
+        @your_color = data.colors[number]
+
+    xhr.send()
 
   path: ->
     console.log("Path is: #!/rooms/#{@name}")
@@ -100,7 +115,7 @@ class Room extends Model
 
     @socket.emit('join-room', @name)
 
-    isShiftDown = false;
+    isShiftDown = false
 
     @message_input.addEventListener "keydown", (e) =>
       if (e.shiftKey) 
@@ -140,12 +155,16 @@ class Room extends Model
       #   message_body.removeChild(this)
 
       new_message.querySelector(".message-author").textContent = message_text.name
+      new_message.querySelector(".message-author").style.color = message_text.color
       @messages_holder.appendChild new_message 
 
 
     return @newRoomDom
   submitForm: (e) =>
-    @message.value = @message_input.innerHTML;
+    @message_color.value = @your_color
+
+    @message.value = @message_input.innerHTML
+
     if @message_name.value.length < 3
       displayError 
         error: "Must have a name bro"
@@ -156,6 +175,7 @@ class Room extends Model
         'message':  @message.value,
         'chatroom': @name
         'name':     @message_name.value
+        'color':    @message_color.value
       
       @message.value = ''
       @message_input.innerHTML = ''

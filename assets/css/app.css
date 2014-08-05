@@ -47,7 +47,7 @@ template {
   flex: 2; }
 
 .message-name {
-  flex: 1; }
+  width: 100px; }
 
 .message-field {
   display: none; }

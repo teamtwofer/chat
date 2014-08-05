@@ -98,12 +98,14 @@
     function Room(type, roomNameAry) {
       this.submitForm = __bind(this.submitForm, this);
       this.stateObj = __bind(this.stateObj, this);
-      var roomName;
+      var roomName, xhr;
       roomName = roomNameAry[1];
       this.title = "Welcome to, " + roomName;
       this.template = document.querySelector('#room');
       this.template.createShadowRoot();
       this.name = roomName;
+      this.your_name = "Nobody";
+      this.your_color = "#006699";
       this.socket = io();
       this.newRoomDom = this.template.content.querySelector(".chatroom").cloneNode(true);
       this.chatter = this.newRoomDom.querySelector('.message-form');
@@ -111,8 +113,23 @@
       this.message = this.newRoomDom.querySelector('.message-field');
       this.messages_holder = this.newRoomDom.querySelector('.messages-holder');
       this.message_name = this.newRoomDom.querySelector('.message-name');
+      this.message_color = this.newRoomDom.querySelector('.message-color');
       this.new_message_template = document.querySelector('#new-message');
       this.new_message_template.createShadowRoot();
+      xhr = new XMLHttpRequest();
+      xhr.overrideMimeType("application/json");
+      xhr.open('GET', '/assets/colors.json', true);
+      xhr.onreadystatechange = (function(_this) {
+        return function() {
+          var data, number;
+          if (xhr.readyState === 4) {
+            data = JSON.parse(xhr.responseText);
+            number = Math.floor(Math.random() * data.colors.length);
+            return _this.your_color = data.colors[number];
+          }
+        };
+      })(this);
+      xhr.send();
     }
 
     Room.prototype.path = function() {
@@ -171,6 +188,7 @@
           message_body = new_message.querySelector(".message-body");
           message_body.innerHTML = tmpMessage;
           new_message.querySelector(".message-author").textContent = message_text.name;
+          new_message.querySelector(".message-author").style.color = message_text.color;
           return _this.messages_holder.appendChild(new_message);
         };
       })(this));
@@ -178,6 +196,7 @@
     };
 
     Room.prototype.submitForm = function(e) {
+      this.message_color.value = this.your_color;
       this.message.value = this.message_input.innerHTML;
       if (this.message_name.value.length < 3) {
         displayError({
@@ -190,7 +209,8 @@
         this.socket.emit('chat message', {
           'message': this.message.value,
           'chatroom': this.name,
-          'name': this.message_name.value
+          'name': this.message_name.value,
+          'color': this.message_color.value
         });
         this.message.value = '';
         this.message_input.innerHTML = '';
