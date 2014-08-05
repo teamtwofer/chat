@@ -159,11 +159,11 @@
           }
         };
       })(this));
-      this.message_input.onkeyup = function(e) {
+      this.message_input.addEventListener("keyup", function(e) {
         if (e.keyCode === 16) {
           return isShiftDown = false;
         }
-      };
+      });
       this.chatter.addEventListener('submit', this.submitForm);
       this.socket.on('receive-chat', (function(_this) {
         return function(message_text) {

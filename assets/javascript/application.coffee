@@ -123,7 +123,7 @@ class Room extends Model
       if (e.keyCode == 13 && isShiftDown != true) 
         @submitForm()
 
-    @message_input.onkeyup = (e) ->
+    @message_input.addEventListener "keyup", (e) ->
       if (e.keyCode == 16)
         isShiftDown = false
 
