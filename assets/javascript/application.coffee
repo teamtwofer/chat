@@ -20,10 +20,14 @@ class FindRoom extends Model
     @title    = 'Find A Chatroom'
     @template = document.querySelector '#new-room-form'
     @template.createShadowRoot()
+  stateObj: ->
+    return {
+      view: "find-room"
+    }
   path: -> 
     return "#!/find-room"
   checkRoom: (roomName) ->
-    if roomName.length > 8 
+    if roomName.length > 5 
       xhr = new XMLHttpRequest()
       xhr.open("POST", "/rooms")
       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -36,11 +40,11 @@ class FindRoom extends Model
 
         console.log("Checked the room and this is the result: #{JSON.stringify(this)}")
         # console.log("Also this: #{JSON.stringify(data)}")
-        routeTo('room', JSON.parse(this.response).room.name)      
+        routeTo('room', [undefined, JSON.parse(this.response).room.name])      
     else
       return {
-               error: "Room did not have a long enough name" 
-             }   
+        error: "Room did not have a long enough name" 
+      }   
 
   render: ->
     findRoomDOM = @template.content.querySelector(".room-finder").cloneNode(true)
@@ -62,15 +66,16 @@ class FindRoom extends Model
     return findRoomDOM
 
 class Room extends Model
-  constructor: (type, roomName)->
+  constructor: (type, roomNameAry)->
+    roomName = roomNameAry[1]
     @title = "Welcome to, #{roomName}"
     @template = document.querySelector '#room'
     @template.createShadowRoot()
 
-    @name = roomName[1]
+    @name = roomName
 
     @socket  = io()
-    @newRoomDom = @template.content.querySelector(".chatroom")
+    @newRoomDom = @template.content.querySelector(".chatroom").cloneNode(true)
 
     @chatter =         @newRoomDom.querySelector '.message-form'
     @message_input =   @newRoomDom.querySelector '.message-input'
@@ -84,9 +89,13 @@ class Room extends Model
   path: ->
     console.log("Path is: #!/rooms/#{@name}")
     return "#!/rooms/#{@name}"
-  stateObj: ->
-    'room':
-      'name': @name
+  stateObj: =>
+    return {
+      view: 'room',
+      name: [undefined, @name]
+    }
+    # 'room':
+    #   'name': @name
   render: ->
 
     @socket.emit('join-room', @name)
@@ -121,6 +130,7 @@ class Room extends Model
         for image_path in image_paths
           if path.indexOf(image_path) != -1
             return "<a href='#{full_string}'><img style='max-width: 250px;' src='#{full_string}'></img></a>"
+        return full_string
 
       message_body = new_message.querySelector(".message-body")
 
@@ -181,8 +191,11 @@ contentYield = document.querySelector ".yield"
 
 displayError = (err) ->
   document.querySelector(".error-display").textContent = err.error if err.error?
+  setTimeout(->
+    document.querySelector(".error-display").textContent = ""
+  ,2000)
 
-routeTo = (where, match) ->
+routeTo = (where, match, dontChangeState) ->
   console.log("You want to go to: #{where}.")
   TempModel = models[where]
   if TempModel?
@@ -192,7 +205,15 @@ routeTo = (where, match) ->
 
     contentYield.appendChild instance.render()
     console.log(instance.title)
-    history.pushState instance.stateObj(), instance.title, instance.path()
+    # unless dontChangeState
+    if true
+      console.log(history.state)
+      console.log(instance.stateObj())
+      if history.state? && instance.stateObj().view != history.state.view
+        history.pushState instance.stateObj(), instance.title, instance.path()
+      else if !history.state?
+        history.pushState instance.stateObj(), instance.title, instance.path()
+
   else
     console.log 'you havent programmed that yet dawg'
 
@@ -216,5 +237,26 @@ Object.keys(router).forEach (key) ->
 
 window.onpopstate = (data) ->
   console.log history.state
+  console.log "data is: "
   console.log data
   console.log 'WHO WHAT WHERE!'
+  if data.state && data.state.view
+    console.log("Routing to #{data.state.view}")
+    routeTo(data.state.view, data.state.name, true)
+  else
+    hash = window.location.hash
+    Object.keys(router).forEach (key) ->
+      console.log(hash)
+      if router.hasOwnProperty(key)
+        route = router[key]
+        console.log(route)
+        matched = hash.match route.matcher
+        if matched? && matched.length > 0
+          # history.pushState {thingie: true}, 'Whoa we are on a page!', "#!#{route.path}"
+          console.log("We made it to a page! #{route.name}")
+          # match.shift()
+          console.log("Match really is: #{matched}")
+          routeTo key, matched
+          return true
+
+    # routeTo('root', true)

@@ -39,13 +39,19 @@
       this.template.createShadowRoot();
     }
 
+    FindRoom.prototype.stateObj = function() {
+      return {
+        view: "find-room"
+      };
+    };
+
     FindRoom.prototype.path = function() {
       return "#!/find-room";
     };
 
     FindRoom.prototype.checkRoom = function(roomName) {
       var xhr;
-      if (roomName.length > 8) {
+      if (roomName.length > 5) {
         xhr = new XMLHttpRequest();
         xhr.open("POST", "/rooms");
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -54,7 +60,7 @@
         }));
         return xhr.onloadend = function(data) {
           console.log("Checked the room and this is the result: " + (JSON.stringify(this)));
-          return routeTo('room', JSON.parse(this.response).room.name);
+          return routeTo('room', [void 0, JSON.parse(this.response).room.name]);
         };
       } else {
         return {
@@ -89,14 +95,17 @@
   Room = (function(_super) {
     __extends(Room, _super);
 
-    function Room(type, roomName) {
+    function Room(type, roomNameAry) {
       this.submitForm = __bind(this.submitForm, this);
+      this.stateObj = __bind(this.stateObj, this);
+      var roomName;
+      roomName = roomNameAry[1];
       this.title = "Welcome to, " + roomName;
       this.template = document.querySelector('#room');
       this.template.createShadowRoot();
-      this.name = roomName[1];
+      this.name = roomName;
       this.socket = io();
-      this.newRoomDom = this.template.content.querySelector(".chatroom");
+      this.newRoomDom = this.template.content.querySelector(".chatroom").cloneNode(true);
       this.chatter = this.newRoomDom.querySelector('.message-form');
       this.message_input = this.newRoomDom.querySelector('.message-input');
       this.message = this.newRoomDom.querySelector('.message-field');
@@ -113,9 +122,8 @@
 
     Room.prototype.stateObj = function() {
       return {
-        'room': {
-          'name': this.name
-        }
+        view: 'room',
+        name: [void 0, this.name]
       };
     };
 
@@ -158,6 +166,7 @@
                 return "<a href='" + full_string + "'><img style='max-width: 250px;' src='" + full_string + "'></img></a>";
               }
             }
+            return full_string;
           });
           message_body = new_message.querySelector(".message-body");
           message_body.innerHTML = tmpMessage;
@@ -229,11 +238,14 @@
 
   displayError = function(err) {
     if (err.error != null) {
-      return document.querySelector(".error-display").textContent = err.error;
+      document.querySelector(".error-display").textContent = err.error;
     }
+    return setTimeout(function() {
+      return document.querySelector(".error-display").textContent = "";
+    }, 2000);
   };
 
-  routeTo = function(where, match) {
+  routeTo = function(where, match, dontChangeState) {
     var TempModel, instance;
     console.log("You want to go to: " + where + ".");
     TempModel = models[where];
@@ -243,7 +255,15 @@
       contentYield.innerHTML = "";
       contentYield.appendChild(instance.render());
       console.log(instance.title);
-      return history.pushState(instance.stateObj(), instance.title, instance.path());
+      if (true) {
+        console.log(history.state);
+        console.log(instance.stateObj());
+        if ((history.state != null) && instance.stateObj().view !== history.state.view) {
+          return history.pushState(instance.stateObj(), instance.title, instance.path());
+        } else if (history.state == null) {
+          return history.pushState(instance.stateObj(), instance.title, instance.path());
+        }
+      }
     } else {
       return console.log('you havent programmed that yet dawg');
     }
@@ -268,8 +288,30 @@
 
   window.onpopstate = function(data) {
     console.log(history.state);
+    console.log("data is: ");
     console.log(data);
-    return console.log('WHO WHAT WHERE!');
+    console.log('WHO WHAT WHERE!');
+    if (data.state && data.state.view) {
+      console.log("Routing to " + data.state.view);
+      return routeTo(data.state.view, data.state.name, true);
+    } else {
+      hash = window.location.hash;
+      return Object.keys(router).forEach(function(key) {
+        var matched, route;
+        console.log(hash);
+        if (router.hasOwnProperty(key)) {
+          route = router[key];
+          console.log(route);
+          matched = hash.match(route.matcher);
+          if ((matched != null) && matched.length > 0) {
+            console.log("We made it to a page! " + route.name);
+            console.log("Match really is: " + matched);
+            routeTo(key, matched);
+            return true;
+          }
+        }
+      });
+    }
   };
 
 }).call(this);

@@ -57,6 +57,11 @@ io.on 'connection', (socket) ->
   socket.on 'join-room', (room) ->
     this.join(room)
     console.log(room)
+    if room.length < 6
+      io.to(this.id).emit 'receive-chat',
+        name:    'system',
+        message: "Room name is not long enough, sorry bro!"
+      return false
     roomExists = Chatroom.hasRoom(room)
     unless roomExists
       Chatroom.newChatroom room
