@@ -21,7 +21,8 @@ template {
 
 .messages-holder {
   padding: 15px;
-  list-style-type: none; }
+  list-style-type: none;
+  margin-bottom: 70px; }
   .messages-holder li {
     margin-bottom: 10px; }
 

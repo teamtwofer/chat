@@ -187,6 +187,7 @@
           });
           message_body = new_message.querySelector(".message-body");
           message_body.innerHTML = tmpMessage;
+          message_body.querySelector("> *:last-child").scrollIntoView();
           new_message.querySelector(".message-author").textContent = message_text.name;
           new_message.querySelector(".message-author").style.color = message_text.color;
           return _this.messages_holder.appendChild(new_message);
