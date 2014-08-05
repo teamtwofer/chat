@@ -188,7 +188,9 @@
           message_body = new_message.querySelector(".message-body");
           message_body.innerHTML = tmpMessage;
           lastMessages = message_body.querySelectorAll(".message");
-          lastMessages[lastMessages.length - 1].scrollIntoView();
+          if (lastMessages.length > 5) {
+            lastMessages[lastMessages.length - 1].scrollIntoView();
+          }
           new_message.querySelector(".message-author").textContent = message_text.name;
           new_message.querySelector(".message-author").style.color = message_text.color;
           return _this.messages_holder.appendChild(new_message);

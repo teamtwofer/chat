@@ -153,7 +153,8 @@ class Room extends Model
 
       lastMessages = message_body.querySelectorAll(".message")
 
-      lastMessages[lastMessages.length - 1].scrollIntoView()
+      if lastMessages.length > 5 
+        lastMessages[lastMessages.length - 1].scrollIntoView()
 
       # message_body.querySelectorAll("script").forEach (element, index, array)->
       #   message_body.removeChild(this)
