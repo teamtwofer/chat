@@ -196,7 +196,7 @@
           height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
           window.scrollTo(0, height);
           if (message_text.name !== _this.message_name.value) {
-            return notification = new Notification("" + _this.message_name + " says...", {
+            return notification = new Notification("" + _this.message_name.value + " says...", {
               body: tmpMessage
             });
           }

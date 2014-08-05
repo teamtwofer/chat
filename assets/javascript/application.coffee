@@ -170,7 +170,7 @@ class Room extends Model
 
       window.scrollTo(0, height)
       if message_text.name != @message_name.value
-        notification = new Notification "#{@message_name} says...", 
+        notification = new Notification "#{@message_name.value} says...", 
           body: tmpMessage  
         
 
