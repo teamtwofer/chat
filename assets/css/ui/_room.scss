@@ -19,13 +19,26 @@
   background-color: #eee;
 }
 
-.message-input {
+%message-input {
   display: block;
-  flex-grow: 1;
   height: 50px;
   background-color: #fff;
   margin-right: 10px;
   padding: 5px;
+  border: none;
+  -webkit-appearance: none;
+}
+
+.message-input {
+  flex: 2;
+
+  @extend %message-input
+}
+
+.message-name {
+  flex: 1;
+
+  @extend %message-input
 }
 
 .message-field {

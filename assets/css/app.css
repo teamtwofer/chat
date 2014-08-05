@@ -9,7 +9,15 @@ body {
   font-family: "Source Sans Pro", Tahoma, Verdana, sans-serif;
   font-size: 15px;
   font-weight: 400;
-  line-height: 20px; }
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -ms-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased; }
+
+template {
+  display: none; }
 
 .messages-holder {
   padding: 15px;
@@ -26,13 +34,20 @@ body {
   right: 0;
   background-color: #eee; }
 
-.message-input {
+.message-input, .message-name {
   display: block;
-  flex-grow: 1;
   height: 50px;
   background-color: #fff;
   margin-right: 10px;
-  padding: 5px; }
+  padding: 5px;
+  border: none;
+  -webkit-appearance: none; }
+
+.message-input {
+  flex: 2; }
+
+.message-name {
+  flex: 1; }
 
 .message-field {
   display: none; }

@@ -51,11 +51,15 @@ io.on 'connection', (socket) ->
     console.log 'message: ' + msg
 
     io.to(usersRooms[this.id]).emit 'receive-chat', 
+      name:    msg.name
       message: msg.message
 
   socket.on 'join-room', (room) ->
     this.join(room)
     console.log(room)
+    roomExists = Chatroom.hasRoom(room)
+    unless roomExists
+      Chatroom.newChatroom room
     Chatroom.rooms[room].users.push(this.id)
     usersRooms[this.id] = room
     # small change to restart heroku

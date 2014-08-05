@@ -14,14 +14,19 @@
   </head>
 
   <body>
+    <section class="error-holder">
+      <p class="error-display"></p>
+    </section>
     <main class="yield">
       
     </main>
     <template id="room">
       <section class="chatroom">
         <ul class="messages-holder"></ul>
-        <form action="" class="message-form">
+        <form class="message-form">
           <div contenteditable="true" class="message-input" autocomplete="off"></div>
+          <input type="text" class="message-name" />
+
           <input hidden="true" type="text" class="message-field" />
           <button class="message-submit">Send</button>
         </form>        

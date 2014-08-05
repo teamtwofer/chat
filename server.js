@@ -59,12 +59,18 @@
     socket.on('chat message', function(msg) {
       console.log('message: ' + msg);
       return io.to(usersRooms[this.id]).emit('receive-chat', {
+        name: msg.name,
         message: msg.message
       });
     });
     return socket.on('join-room', function(room) {
+      var roomExists;
       this.join(room);
       console.log(room);
+      roomExists = Chatroom.hasRoom(room);
+      if (!roomExists) {
+        Chatroom.newChatroom(room);
+      }
       Chatroom.rooms[room].users.push(this.id);
       return usersRooms[this.id] = room;
     });

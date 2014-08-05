@@ -23,19 +23,24 @@ class FindRoom extends Model
   path: -> 
     return "#!/find-room"
   checkRoom: (roomName) ->
-    xhr = new XMLHttpRequest()
-    xhr.open("POST", "/rooms")
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    if roomName.length > 8 
+      xhr = new XMLHttpRequest()
+      xhr.open("POST", "/rooms")
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-     # send the collected data as JSON
-    xhr.send(JSON.stringify({"room":roomName}));
-    # xhr.send("room=#{roomName}")
+       # send the collected data as JSON
+      xhr.send(JSON.stringify({"room":roomName}));
+      # xhr.send("room=#{roomName}")
 
-    xhr.onloadend = (data) ->
+      xhr.onloadend = (data) ->
 
-      console.log("Checked the room and this is the result: #{JSON.stringify(this)}")
-      # console.log("Also this: #{JSON.stringify(data)}")
-      routeTo('room', JSON.parse(this.response).room.name)
+        console.log("Checked the room and this is the result: #{JSON.stringify(this)}")
+        # console.log("Also this: #{JSON.stringify(data)}")
+        routeTo('room', JSON.parse(this.response).room.name)      
+    else
+      return {
+               error: "Room did not have a long enough name" 
+             }   
 
   render: ->
     findRoomDOM = @template.content.querySelector(".room-finder").cloneNode(true)
@@ -52,6 +57,7 @@ class FindRoom extends Model
       # if room?
       #   routeTo('room', room)
       # return false
+      displayError(room) if room?
 
     return findRoomDOM
 
@@ -61,7 +67,20 @@ class Room extends Model
     @template = document.querySelector '#room'
     @template.createShadowRoot()
 
-    @name = roomName
+    @name = roomName[1]
+
+    @socket  = io()
+    @newRoomDom = @template.content.querySelector(".chatroom")
+
+    @chatter =         @newRoomDom.querySelector '.message-form'
+    @message_input =   @newRoomDom.querySelector '.message-input'
+    @message =         @newRoomDom.querySelector '.message-field'
+    @messages_holder = @newRoomDom.querySelector '.messages-holder'
+    @message_name =    @newRoomDom.querySelector '.message-name'
+
+    @new_message_template = document.querySelector '#new-message'
+    @new_message_template.createShadowRoot()
+
   path: ->
     console.log("Path is: #!/rooms/#{@name}")
     return "#!/rooms/#{@name}"
@@ -69,42 +88,72 @@ class Room extends Model
     'room':
       'name': @name
   render: ->
-    newRoomDom = @template.content.querySelector(".chatroom")
 
-    socket  = io()
-    chatter = newRoomDom.querySelector '.message-form'
-    message_input = newRoomDom.querySelector '.message-input'
-    message = newRoomDom.querySelector '.message-field'
-    messages_holder = newRoomDom.querySelector '.messages-holder'
+    @socket.emit('join-room', @name)
 
-    new_message_template = document.querySelector '#new-message'
-    new_message_template.createShadowRoot()
+    isShiftDown = false;
 
-    socket.emit('join-room', @name)
+    @message_input.addEventListener "keydown", (e) =>
+      if (e.shiftKey) 
+        isShiftDown = true
+      if (e.keyCode == 13 && isShiftDown != true) 
+        @submitForm()
 
-    chatter.addEventListener 'submit', (e) ->
-      message.value = message_input.innerHTML;
+    @message_input.onkeyup = (e) ->
+      if (e.keyCode == 16)
+        isShiftDown = false
 
-      unless message.value.length < 1
-        socket.emit 'chat message', 
-          'message':  message.value,
-          'chatroom': @name
-        
-        message.value = ''
-        message_input.innerHTML = ''
-      e.preventDefault()
-      return false
-
-    socket.on 'receive-chat', (message_text) ->
+    @chatter.addEventListener 'submit',  @submitForm
+    @socket.on 'receive-chat', (message_text) =>
       console.log "is this working?"
-      new_message = new_message_template.content
+      new_message = @new_message_template.content
                       .querySelector(".message").cloneNode(true);
       console.log message_text
-      new_message.querySelector(".message-body").textContent = message_text.message
-      messages_holder.appendChild new_message 
+
+      tmpMessage = message_text.message
+
+      urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g
+
+      image_paths = ["jpg", "png", "gif"]
+      console.log("Trying to match: #{tmpMessage}")
+      tmpMessage = tmpMessage.replace urlRegex, (full_string, was_matched, base_url, base_protocol, path) ->
+        console.log("SOME SHIT WAS MATCHED BRO")
+        for image_path in image_paths
+          if path.indexOf(image_path) != -1
+            return "<a href='#{full_string}'><img style='max-width: 250px;' src='#{full_string}'></img></a>"
+
+      message_body = new_message.querySelector(".message-body")
+
+      message_body.innerHTML = tmpMessage
+
+      # message_body.querySelectorAll("script").forEach (element, index, array)->
+      #   message_body.removeChild(this)
+
+      new_message.querySelector(".message-author").textContent = message_text.name
+      @messages_holder.appendChild new_message 
 
 
-    return newRoomDom
+    return @newRoomDom
+  submitForm: (e) =>
+    @message.value = @message_input.innerHTML;
+    if @message_name.value.length < 3
+      displayError 
+        error: "Must have a name bro"
+      return false
+    console.log("submitting...")
+    unless @message.value.length < 1
+      @socket.emit 'chat message', 
+        'message':  @message.value,
+        'chatroom': @name
+        'name':     @message_name.value
+      
+      @message.value = ''
+      @message_input.innerHTML = ''
+    if e?
+      e.preventDefault()
+    @message_input.focus()
+    return false
+
 
 router = 
   'root': 
@@ -129,6 +178,9 @@ models =
   'room':      Room
 
 contentYield = document.querySelector ".yield"
+
+displayError = (err) ->
+  document.querySelector(".error-display").textContent = err.error if err.error?
 
 routeTo = (where, match) ->
   console.log("You want to go to: #{where}.")
