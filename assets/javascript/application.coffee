@@ -151,10 +151,10 @@ class Room extends Model
 
       message_body.innerHTML = tmpMessage
 
-      lastMessages = message_body.querySelectorAll(".message")
+      # lastMessages = message_body.querySelectorAll(".message")
 
-      if lastMessages.length > 5 
-        lastMessages[lastMessages.length - 1].scrollIntoView()
+      # if lastMessages.length > 5 
+      #   lastMessages[lastMessages.length - 1].scrollIntoView()
 
       # message_body.querySelectorAll("script").forEach (element, index, array)->
       #   message_body.removeChild(this)
@@ -162,6 +162,8 @@ class Room extends Model
       new_message.querySelector(".message-author").textContent = message_text.name
       new_message.querySelector(".message-author").style.color = message_text.color
       @messages_holder.appendChild new_message 
+
+      window.scrollTo(0, window.innerHeight)
 
 
     return @newRoomDom
