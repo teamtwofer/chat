@@ -112,7 +112,7 @@ class Room extends Model
     # 'room':
     #   'name': @name
   render: ->
-
+    Notification.requestPermission()
     @socket.emit('join-room', @name)
 
     isShiftDown = false
@@ -169,6 +169,10 @@ class Room extends Model
       height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
       window.scrollTo(0, height)
+      if message_text.name != @message_name.value
+        notification = new Notification "#{@message_name} says...", 
+          body: tmpMessage  
+        
 
 
     return @newRoomDom
@@ -182,9 +186,9 @@ class Room extends Model
         error: "Must have a name bro"
       return false
     console.log("submitting...")
-    unless @message.value.length < 1
+    unless @message_input.innerHTML.length < 1
       @socket.emit 'chat message', 
-        'message':  @message.value,
+        'message':  @message_input.innerHTML,
         'chatroom': @name
         'name':     @message_name.value
         'color':    @message_color.value

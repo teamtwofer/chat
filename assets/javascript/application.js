@@ -146,6 +146,7 @@
 
     Room.prototype.render = function() {
       var isShiftDown;
+      Notification.requestPermission();
       this.socket.emit('join-room', this.name);
       isShiftDown = false;
       this.message_input.addEventListener("keydown", (function(_this) {
@@ -166,7 +167,7 @@
       this.chatter.addEventListener('submit', this.submitForm);
       this.socket.on('receive-chat', (function(_this) {
         return function(message_text) {
-          var body, height, html, image_paths, message_body, new_message, tmpMessage, urlRegex;
+          var body, height, html, image_paths, message_body, new_message, notification, tmpMessage, urlRegex;
           console.log("is this working?");
           new_message = _this.new_message_template.content.querySelector(".message").cloneNode(true);
           console.log(message_text);
@@ -193,7 +194,12 @@
           body = document.body;
           html = document.documentElement;
           height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-          return window.scrollTo(0, height);
+          window.scrollTo(0, height);
+          if (message_text.name !== _this.message_name.value) {
+            return notification = new Notification("" + _this.message_name + " says...", {
+              body: tmpMessage
+            });
+          }
         };
       })(this));
       return this.newRoomDom;
@@ -209,9 +215,9 @@
         return false;
       }
       console.log("submitting...");
-      if (!(this.message.value.length < 1)) {
+      if (!(this.message_input.innerHTML.length < 1)) {
         this.socket.emit('chat message', {
-          'message': this.message.value,
+          'message': this.message_input.innerHTML,
           'chatroom': this.name,
           'name': this.message_name.value,
           'color': this.message_color.value

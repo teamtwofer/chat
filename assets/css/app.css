@@ -28,6 +28,7 @@ template {
 
 .message-form {
   display: flex;
+  display: -webkit-flex;
   padding: 10px;
   position: fixed;
   bottom: 0;
@@ -45,7 +46,8 @@ template {
   -webkit-appearance: none; }
 
 .message-input {
-  flex: 2; }
+  flex: 2;
+  -webkit-flex: 2; }
 
 .message-name {
   width: 100px; }

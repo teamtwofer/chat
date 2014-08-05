@@ -9,6 +9,7 @@
 
 .message-form {
   display: flex;
+  display: -webkit-flex;
   padding: 10px;
 
   position: fixed;
@@ -31,14 +32,15 @@
 
 .message-input {
   flex: 2;
+  -webkit-flex: 2;
 
-  @extend %message-input
+  @extend %message-input;
 }
 
 .message-name {
   width: 100px;
 
-  @extend %message-input
+  @extend %message-input;
 }
 
 .message-field {
