@@ -252,7 +252,7 @@
           'color': this.message_color.value
         });
         this.message.value = '';
-        this.message_input.innerHTML = '';
+        this.message_input.value = '';
       }
       if (e != null) {
         e.preventDefault();

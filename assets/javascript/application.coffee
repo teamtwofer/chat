@@ -223,7 +223,8 @@ class Room extends Model
         'color':    @message_color.value
       
       @message.value = ''
-      @message_input.innerHTML = ''
+      @message_input.value = ''
+      # @message_input.innerHTML = ''
     if e?
       e.preventDefault()
     @message_input.focus()
