@@ -202,7 +202,7 @@
           console.log(message_text);
           tmpMessage = message_text.message;
           urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
-          image_paths = ["jpg", "png", "gif"];
+          image_paths = ["jpg", "png", "gif", "jpeg"];
           console.log("Trying to match: " + tmpMessage);
           tmpMessage = tmpMessage.replace(urlRegex, function(full_string, was_matched, base_url, base_protocol, path) {
             var image_path, _i, _len;
@@ -236,7 +236,7 @@
 
     Room.prototype.submitForm = function(e) {
       this.message_color.value = this.your_color;
-      this.message.value = this.message_input.innerHTML;
+      this.message.value = this.message_input.value;
       if (this.message_name.value.length < 3) {
         displayError({
           error: "Must have a name bro"
@@ -244,9 +244,9 @@
         return false;
       }
       console.log("submitting...");
-      if (!(this.message_input.innerHTML.length < 1)) {
+      if (!(this.message_input.value.length < 1)) {
         this.socket.emit('chat message', {
-          'message': this.message_input.innerHTML,
+          'message': this.message_input.value,
           'chatroom': this.name,
           'name': this.message_name.value,
           'color': this.message_color.value

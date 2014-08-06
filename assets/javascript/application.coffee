@@ -165,7 +165,7 @@ class Room extends Model
 
       urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g
 
-      image_paths = ["jpg", "png", "gif"]
+      image_paths = ["jpg", "png", "gif", "jpeg"]
       console.log("Trying to match: #{tmpMessage}")
       tmpMessage = tmpMessage.replace urlRegex, (full_string, was_matched, base_url, base_protocol, path) ->
         console.log("SOME SHIT WAS MATCHED BRO")
@@ -205,16 +205,19 @@ class Room extends Model
   submitForm: (e) =>
     @message_color.value = @your_color
 
-    @message.value = @message_input.innerHTML
+    # @message.value = @message_input.innerHTML
+    @message.value = @message_input.value
+
 
     if @message_name.value.length < 3
       displayError 
         error: "Must have a name bro"
       return false
     console.log("submitting...")
-    unless @message_input.innerHTML.length < 1
+    # unless @message_input.innerHTML.length < 1
+    unless @message_input.value.length < 1
       @socket.emit 'chat message', 
-        'message':  @message_input.innerHTML,
+        'message':  @message_input.value,
         'chatroom': @name
         'name':     @message_name.value
         'color':    @message_color.value

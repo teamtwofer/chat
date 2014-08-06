@@ -1,10 +1,18 @@
 # cs   = require 'coffee-script/register'
 express  = require('express')
-app = express()
-bp   = require('body-parser')
-http = require('http').Server(app)
-io   = require('socket.io')(http)
+app      = express()
+bp       = require('body-parser')
+http     = require('http').Server(app)
+io       = require('socket.io')(http)
 Chatroom = require('./chatroom').Chatroom
+marked   = require('marked')
+
+marked.setOptions highlight: (code, lang, callback) ->
+  require("pygmentize-bundled")
+    lang: lang
+    format: "html"
+  , code, (err, result) ->
+    callback err, result.toString()
 
 app.use(bp.json())
 
@@ -50,10 +58,20 @@ io.on 'connection', (socket) ->
   socket.on 'chat message', (msg) ->
     console.log msg
 
-    io.to(usersRooms[this.id]).emit 'receive-chat', 
-      color:   msg.color
-      name:    msg.name
-      message: msg.message
+    renderedMsg = msg.message
+
+    renderedMsg.replace(/\&lt;br\&gt;/, "    ")
+
+    # Using async version of marked
+    marked renderedMsg, (err, content) =>
+      throw err  if err
+      io.to(usersRooms[this.id]).emit 'receive-chat', 
+        color:   msg.color
+        name:    msg.name
+        message: content
+      console.log content
+
+
 
   socket.on 'join-room', (room) ->
     this.join(room)
