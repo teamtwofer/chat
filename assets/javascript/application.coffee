@@ -170,7 +170,7 @@ class Room extends Model
       tmpMessage = tmpMessage.replace urlRegex, (full_string, was_matched, base_url, base_protocol, path) ->
         console.log("SOME SHIT WAS MATCHED BRO")
         for image_path in image_paths
-          if path.indexOf(image_path) != -1
+          if path? && path.indexOf(image_path) != -1
             return "<a href='#{full_string}'><img style='max-width: 250px;' src='#{full_string}'></img></a>"
         return full_string
 

@@ -209,7 +209,7 @@
             console.log("SOME SHIT WAS MATCHED BRO");
             for (_i = 0, _len = image_paths.length; _i < _len; _i++) {
               image_path = image_paths[_i];
-              if (path.indexOf(image_path) !== -1) {
+              if ((path != null) && path.indexOf(image_path) !== -1) {
                 return "<a href='" + full_string + "'><img style='max-width: 250px;' src='" + full_string + "'></img></a>";
               }
             }
