@@ -17,6 +17,10 @@
   marked = require('marked');
 
   marked.setOptions({
+    gfm: true,
+    emoji: function(emoji) {
+      return "<img src=\"/images/emojis/" + emoji + ".png\" alt=\":" + emoji + ":\" title=\":" + emoji + ":\" class=\"emoji\" align=\"absmiddle\" height=\"20\" width=\"20\">";
+    },
     highlight: function(code, lang, callback) {
       return require("pygmentize-bundled")({
         lang: lang,
@@ -41,6 +45,10 @@
 
   app.get('/rooms/:name', function(req, res) {
     return console.log('whoa, something happened!');
+  });
+
+  app.get('/images/emojis/:emoji', function(req, res) {
+    return res.sendfile("assets/images/emojis/" + req.params.emoji);
   });
 
   app.post('/rooms', function(req, res) {

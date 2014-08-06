@@ -7,12 +7,17 @@ io       = require('socket.io')(http)
 Chatroom = require('./chatroom').Chatroom
 marked   = require('marked')
 
-marked.setOptions highlight: (code, lang, callback) ->
-  require("pygmentize-bundled")
-    lang: lang
-    format: "html"
-  , code, (err, result) ->
-    callback err, result.toString()
+marked.setOptions 
+  gfm: true
+  emoji:  (emoji) ->
+    return "<img src=\"/images/emojis/#{emoji}.png\" alt=\":#{emoji}:\" title=\":#{emoji}:\" class=\"emoji\" align=\"absmiddle\" height=\"20\" width=\"20\">"
+    # return '<span data-emoji="' + emoji + '"></span>';
+  highlight: (code, lang, callback) ->
+    require("pygmentize-bundled")
+      lang: lang
+      format: "html"
+    , code, (err, result) ->
+      callback err, result.toString()
 
 app.use(bp.json())
 
@@ -26,6 +31,9 @@ app.get '/application.js', (req, res) ->
 
 app.get '/rooms/:name', (req, res) -> 
   console.log 'whoa, something happened!'
+
+app.get '/images/emojis/:emoji', (req, res) -> 
+  res.sendfile "assets/images/emojis/#{req.params.emoji}"
 
 app.post '/rooms', (req, res) ->
   console.log req.param("room")
