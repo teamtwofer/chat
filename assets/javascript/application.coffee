@@ -32,9 +32,6 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $
     tempMessages = JSON.parse localStorage.messages
 
   $scope.messages = tempMessages
-  if $scope.messages == ""
-    $scope.messages = new Array()
-
 
   $scope.sendBody = (text) ->
     $sce.trustAsHtml(text);
@@ -73,6 +70,12 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $
     $scope.messages.push message
     localStorage.messages = JSON.stringify $scope.messages
     $scope.$apply()
+    body = document.body
+    html = document.documentElement
+
+    height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+    window.scrollTo(0, height)
 ]
 
 app.directive "messages", () ->

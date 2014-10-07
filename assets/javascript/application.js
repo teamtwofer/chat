@@ -42,14 +42,11 @@
         tempMessages = JSON.parse(localStorage.messages);
       }
       $scope.messages = tempMessages;
-      if ($scope.messages === "") {
-        $scope.messages = new Array();
-      }
       $scope.sendBody = function(text) {
         return $sce.trustAsHtml(text);
       };
       return $rootScope.socket.on("receive-chat", function(messageText) {
-        var image_paths, message, tmpMessage, urlRegex;
+        var body, height, html, image_paths, message, tmpMessage, urlRegex;
         tmpMessage = messageText.message;
         urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
         image_paths = ["jpg", "png", "gif", "jpeg"];
@@ -78,7 +75,11 @@
         };
         $scope.messages.push(message);
         localStorage.messages = JSON.stringify($scope.messages);
-        return $scope.$apply();
+        $scope.$apply();
+        body = document.body;
+        html = document.documentElement;
+        height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+        return window.scrollTo(0, height);
       });
     }
   ]);
