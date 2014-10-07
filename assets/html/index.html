@@ -1,53 +1,21 @@
 <!doctype html>
-<html>
+<html ng-app="chat">
   <head>
     <!-- <title>Socket.IO chat</title> -->
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic|Inconsolata:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/assets/css/app.css"></link>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <script src="http://www.polymer-project.org/components/ShadowDOM/shadowdom.js"></script>
+    <base href="/">
 
-    <script type="text/javascript">
-    HTMLElement.prototype.createShadowRoot = HTMLElement.prototype.webkitCreateShadowRoot ||
-                                             HTMLElement.prototype.mozCreateShadowRoot ||
-                                             HTMLElement.prototype.createShadowRoot;
-    </script>
   </head>
 
   <body>
     <section class="error-holder">
       <p class="error-display"></p>
     </section>
-    <main class="yield">
+    <main class="yield" ng-view>
       
     </main>
-    <template id="room">
-      <section class="chatroom">
-        <ul class="messages-holder"></ul>
-        <form class="message-form">
-          <!-- <div contenteditable="true" class="message-input" autocomplete="off"></div> -->
-          <textarea class="message-input"></textarea> <!-- hidden="true" type="text" class="message-input" /> -->
-
-          <input type="text" value="Nobody" class="message-name" />
-          <input hidden="true" type="text" value="#006699" class="message-color" />
-
-          <input hidden="true" type="text" class="message-field" />
-          <button class="message-submit">Send</button>
-        </form>        
-      </section>
-    </template>
-    <template id="new-room-form">
-      <section class="room-finder">
-        <form class="find-room">
-          <div class="room-name-fields">
-            <input class="input-room-name" placeholder="Room Name" />
-          </div>
-          <div class="find-room-actions">
-            <button class="room-search">Find Room</button>
-          </div>
-        </form>
-      </section>
-    </template>
     <template id="new-message">
       <li class="message">
         <div class="message-author">Placeholder</div>
@@ -58,6 +26,13 @@
       </li>
     </template>
     <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.js"></script>
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular-route.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular-sanitize.js"></script>
+
+    <script src="/assets/javascript/angular_routes.js"></script>
     <script src="/application.js"></script>
+
   </body>
 </html>

@@ -1,0 +1,14 @@
+<section class="room-finder">
+  <form class="find-room"
+    novalidate
+    name="findRoom"
+    ng-submit="findRoom.$valid && findPlace()"
+  >
+    <div class="room-name-fields">
+      <input class="input-room-name" placeholder="Room Name" ng-model="roomName" />
+    </div>
+    <div class="find-room-actions">
+      <button class="room-search">Find Room</button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,17 @@
+<section class="chatroom">
+  <messages></messages>
+  <form class="message-form"
+    novalidate
+    name="newMessage"
+    ng-submit="newMessage.$valid && createNewMessage()"
+  >
+    <!-- <div contenteditable="true" class="message-input" autocomplete="off"></div> -->
+    <textarea class="message-input" required ng-keydown="keyPressed($event)" ng-keyup="keyReleased($event)" ng-model="messageText"></textarea> <!-- hidden="true" type="text" class="message-input" /> -->
+
+    <input type="text" ng-model="name" class="message-name" required />
+    <input hidden="true" type="text" class="message-color" ng-model="color" required />
+
+    <input hidden="true" type="text" class="message-field" />
+    <button class="message-submit">Send</button>
+  </form>        
+</section>

@@ -30,7 +30,7 @@ app.get '/application.js', (req, res) ->
   res.sendfile 'assets/javascript/application.js'
 
 app.get '/rooms/:name', (req, res) -> 
-  console.log 'whoa, something happened!'
+  res.sendfile 'assets/html/index.html'
 
 app.get '/images/emojis/:emoji', (req, res) -> 
   res.sendfile "assets/images/emojis/#{req.params.emoji}"
@@ -96,7 +96,7 @@ io.on 'connection', (socket) ->
     usersRooms[this.id] = room
 
     io.to(usersRooms[this.id]).emit 'receive-chat',
-      color:   "#000"
+      color:   "000000"
       name:    "system"
       message: "A User Has Joined the Chatroom"
     # small change to restart heroku
