@@ -36,10 +36,10 @@
 
   app.controller("MessagesController", [
     "$scope", "$rootScope", "$sce", function($scope, $rootScope, $sce) {
-      var tempMessages, tmpMessages;
+      var tempMessages;
       tempMessages = [];
       if ((localStorage.messages != null) && localStorage.messages.length > 1) {
-        tmpMessages = JSON.parse(localStorage.messages);
+        tempMessages = JSON.parse(localStorage.messages);
       }
       $scope.messages = tempMessages;
       if ($scope.messages === "") {

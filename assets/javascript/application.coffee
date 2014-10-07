@@ -29,7 +29,7 @@ app.controller "NewRoomController", ["$scope", "$http", "$location", ($scope, $h
 app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $rootScope, $sce) ->
   tempMessages = []
   if localStorage.messages? && localStorage.messages.length > 1
-    tmpMessages = JSON.parse localStorage.messages
+    tempMessages = JSON.parse localStorage.messages
 
   $scope.messages = tempMessages
   if $scope.messages == ""
