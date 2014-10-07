@@ -62,6 +62,10 @@ io.on 'connection', (socket) ->
   console.log socket.id
   socket.on 'disconnect', ->
     console.log 'user disconnected'
+    io.to(usersRooms[this.id]).emit 'receive-chat',
+      color:   "000000"
+      name:    "system"
+      message: "Someone Has Left the Chatroom"
 
   socket.on 'chat message', (msg) ->
     console.log msg
@@ -81,7 +85,7 @@ io.on 'connection', (socket) ->
 
 
 
-  socket.on 'join-room', (room) ->
+  socket.on 'join-room', (room, username) ->
     this.join(room)
     console.log(room)
     if room.length < 6
@@ -98,7 +102,7 @@ io.on 'connection', (socket) ->
     io.to(usersRooms[this.id]).emit 'receive-chat',
       color:   "000000"
       name:    "system"
-      message: "A User Has Joined the Chatroom"
+      message: "#{username} Has Joined the Chatroom"
     # small change to restart heroku
     
 

@@ -75,7 +75,12 @@
     console.log('a user connected');
     console.log(socket.id);
     socket.on('disconnect', function() {
-      return console.log('user disconnected');
+      console.log('user disconnected');
+      return io.to(usersRooms[this.id]).emit('receive-chat', {
+        color: "000000",
+        name: "system",
+        message: "Someone Has Left the Chatroom"
+      });
     });
     socket.on('chat message', function(msg) {
       var renderedMsg;
@@ -96,7 +101,7 @@
         };
       })(this));
     });
-    return socket.on('join-room', function(room) {
+    return socket.on('join-room', function(room, username) {
       var roomExists;
       this.join(room);
       console.log(room);
@@ -116,7 +121,7 @@
       return io.to(usersRooms[this.id]).emit('receive-chat', {
         color: "000000",
         name: "system",
-        message: "A User Has Joined the Chatroom"
+        message: "" + username + " Has Joined the Chatroom"
       });
     });
   });

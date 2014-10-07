@@ -33,6 +33,8 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $
 
   $scope.messages = tempMessages
 
+
+
   $scope.sendBody = (text) ->
     $sce.trustAsHtml(text);
 
@@ -109,7 +111,7 @@ app.controller "RoomController", ["$scope", "$http", "$location", "$routeParams"
   $scope.getColor()
   $scope.isShiftDown = false;
 
-  $rootScope.socket.emit "join-room", $scope.roomName
+  $rootScope.socket.emit "join-room", $scope.roomName, $scope.name
 
   $scope.keyPressed = (e) ->
     console.log("e.keyCode='#{e.keyCode}'");

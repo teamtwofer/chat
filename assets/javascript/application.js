@@ -115,7 +115,7 @@
       };
       $scope.getColor();
       $scope.isShiftDown = false;
-      $rootScope.socket.emit("join-room", $scope.roomName);
+      $rootScope.socket.emit("join-room", $scope.roomName, $scope.name);
       $scope.keyPressed = function(e) {
         console.log("e.keyCode='" + e.keyCode + "'");
         if (e.shiftKey) {
