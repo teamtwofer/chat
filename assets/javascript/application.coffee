@@ -87,7 +87,7 @@ app.controller "RoomController", ["$scope", "$http", "$location", "$routeParams"
   $rootScope.socket = io.connect "/", 
     'reconnect': true,
     'reconnection delay': 500,
-    'max reconnection attempts': 10
+    'max reconnection attempts': 1000
   $scope.messageText = ""
   $scope.roomName = $routeParams.roomName
   unless localStorage.name?
