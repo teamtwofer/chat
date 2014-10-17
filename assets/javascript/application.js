@@ -65,7 +65,7 @@
             }
           }
         };
-      })(this), 500);
+      })(this), 400);
       $scope.sendBody = function(text) {
         return $sce.trustAsHtml(text);
       };
@@ -101,6 +101,9 @@
           };
         };
         $scope.messages.push(message);
+        if ($scope.messages.length > 100) {
+          $scope.messages.slice(-99);
+        }
         localStorage.messages = JSON.stringify($scope.messages);
         $scope.$apply();
         body = document.body;

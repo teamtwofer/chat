@@ -56,7 +56,7 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", "$window",
       else
         document.title = "You have unread messages"
       # do thing
-  , 500)
+  , 400)
 
   $scope.sendBody = (text) ->
     $sce.trustAsHtml(text);
@@ -95,6 +95,7 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", "$window",
         'color': '#'+color
       }
     $scope.messages.push message
+    $scope.messages.slice(-99) if $scope.messages.length > 100
     localStorage.messages = JSON.stringify $scope.messages
     $scope.$apply()
     body = document.body
