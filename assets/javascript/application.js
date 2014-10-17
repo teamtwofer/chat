@@ -101,10 +101,7 @@
           };
         };
         $scope.messages.push(message);
-        if ($scope.messages.length > 100) {
-          $scope.messages = $scope.messages.slice(-99);
-        }
-        localStorage.messages = JSON.stringify($scope.messages);
+        localStorage.messages = JSON.stringify($scope.messages.slice(-99));
         $scope.$apply();
         body = document.body;
         html = document.documentElement;
