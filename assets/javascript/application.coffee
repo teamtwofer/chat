@@ -26,14 +26,37 @@ app.controller "NewRoomController", ["$scope", "$http", "$location", ($scope, $h
       $location.path("/rooms/#{data.room.name}")
 ]
 
-app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $rootScope, $sce) ->
+app.controller "MessagesController", ["$scope", "$rootScope", "$sce", "$window", ($scope, $rootScope, $sce, $window) ->
   tempMessages = []
   if localStorage.messages? && localStorage.messages.length > 1
     tempMessages = JSON.parse localStorage.messages
 
   $scope.messages = tempMessages
 
+  userIsFocused  = true
+  unreadMessages = false
+  $window.onblur = () ->
+    userIsFocused = false
+    console.log "User Is Unfocused"
 
+  $window.onfocus = () ->
+    userIsFocused  = true
+    unreadMessages = false
+    console.log("user is focused")
+    document.title = "Twofer Chat!"
+
+
+
+  setInterval( () =>
+    # console.log("unread messages")
+    if !userIsFocused && unreadMessages
+      console.log(true)
+      if document.title == "You have unread messages"
+        document.title = "Twofer Chat!"
+      else
+        document.title = "You have unread messages"
+      # do thing
+  , 500)
 
   $scope.sendBody = (text) ->
     $sce.trustAsHtml(text);
@@ -43,6 +66,8 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", ($scope, $
     #   body: messageText.message
 
     # }
+    unreadMessages = true unless userIsFocused
+
     tmpMessage = messageText.message
 
     urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g
@@ -114,17 +139,17 @@ app.controller "RoomController", ["$scope", "$http", "$location", "$routeParams"
   $rootScope.socket.emit "join-room", $scope.roomName, $scope.name
 
   $scope.keyPressed = (e) ->
-    console.log("e.keyCode='#{e.keyCode}'");
+    # console.log("e.keyCode='#{e.keyCode}'");
     if (e.shiftKey) 
       $scope.isShiftDown = true
     if (e.keyCode == 13 && $scope.isShiftDown != true) 
       $scope.createNewMessage()
 
   $scope.keyReleased = (e) ->
-    console.log("Key Released=#{e.keyCode}")
+    # console.log("Key Released=#{e.keyCode}")
     if (e.keyCode == 16)
       $scope.isShiftDown = false
-    console.log($scope.isShiftDown)
+    # console.log($scope.isShiftDown)
 
   $scope.createNewMessage = () ->
     # nothing yett

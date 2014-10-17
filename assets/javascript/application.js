@@ -35,18 +35,45 @@
   ]);
 
   app.controller("MessagesController", [
-    "$scope", "$rootScope", "$sce", function($scope, $rootScope, $sce) {
-      var tempMessages;
+    "$scope", "$rootScope", "$sce", "$window", function($scope, $rootScope, $sce, $window) {
+      var tempMessages, unreadMessages, userIsFocused;
       tempMessages = [];
       if ((localStorage.messages != null) && localStorage.messages.length > 1) {
         tempMessages = JSON.parse(localStorage.messages);
       }
       $scope.messages = tempMessages;
+      userIsFocused = true;
+      unreadMessages = false;
+      $window.onblur = function() {
+        userIsFocused = false;
+        return console.log("User Is Unfocused");
+      };
+      $window.onfocus = function() {
+        userIsFocused = true;
+        unreadMessages = false;
+        console.log("user is focused");
+        return document.title = "Twofer Chat!";
+      };
+      setInterval((function(_this) {
+        return function() {
+          if (!userIsFocused && unreadMessages) {
+            console.log(true);
+            if (document.title === "You have unread messages") {
+              return document.title = "Twofer Chat!";
+            } else {
+              return document.title = "You have unread messages";
+            }
+          }
+        };
+      })(this), 500);
       $scope.sendBody = function(text) {
         return $sce.trustAsHtml(text);
       };
       return $rootScope.socket.on("receive-chat", function(messageText) {
         var body, height, html, image_paths, message, tmpMessage, urlRegex;
+        if (!userIsFocused) {
+          unreadMessages = true;
+        }
         tmpMessage = messageText.message;
         urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
         image_paths = ["jpg", "png", "gif", "jpeg"];
@@ -117,7 +144,6 @@
       $scope.isShiftDown = false;
       $rootScope.socket.emit("join-room", $scope.roomName, $scope.name);
       $scope.keyPressed = function(e) {
-        console.log("e.keyCode='" + e.keyCode + "'");
         if (e.shiftKey) {
           $scope.isShiftDown = true;
         }
@@ -126,11 +152,9 @@
         }
       };
       $scope.keyReleased = function(e) {
-        console.log("Key Released=" + e.keyCode);
         if (e.keyCode === 16) {
-          $scope.isShiftDown = false;
+          return $scope.isShiftDown = false;
         }
-        return console.log($scope.isShiftDown);
       };
       return $scope.createNewMessage = function() {
         localStorage.name = $scope.name;
