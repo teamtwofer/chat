@@ -95,7 +95,10 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", "$window",
         'color': '#'+color
       }
     $scope.messages.push message
-    $scope.messages.slice(-99) if $scope.messages.length > 100
+    
+    if $scope.messages.length > 100
+      $scope.messages = $scope.messages.slice(-99) 
+
     localStorage.messages = JSON.stringify $scope.messages
     $scope.$apply()
     body = document.body

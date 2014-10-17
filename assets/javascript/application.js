@@ -102,7 +102,7 @@
         };
         $scope.messages.push(message);
         if ($scope.messages.length > 100) {
-          $scope.messages.slice(-99);
+          $scope.messages = $scope.messages.slice(-99);
         }
         localStorage.messages = JSON.stringify($scope.messages);
         $scope.$apply();
