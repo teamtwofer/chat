@@ -26,3 +26,6 @@ node_modules
 
 # sass cache
 .sass-cache/
+
+# .DS_Store
+.DS_Store
