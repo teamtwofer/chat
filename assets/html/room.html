@@ -1,17 +1,25 @@
 <section class="chatroom">
   <messages></messages>
-  <form class="message-form"
+  <form class="message-form-container"
     novalidate
     name="newMessage"
     ng-submit="newMessage.$valid && createNewMessage()"
   >
-    <!-- <div contenteditable="true" class="message-input" autocomplete="off"></div> -->
     <textarea class="message-input" required ng-keydown="keyPressed($event)" ng-keyup="keyReleased($event)" ng-model="messageText"></textarea> <!-- hidden="true" type="text" class="message-input" /> -->
 
-    <input type="text" ng-model="name" class="message-name" required />
-    <input hidden="true" type="text" class="message-color" ng-model="color" required />
+    <div class="message-tab-container">
+      <a href="#" id="tab-user" class="message-tab">User</a>
+      <a href="#" id="tab-room" class="message-tab">Room</a>
+    </div>
 
+    <div id="tab-content-user" class="message-tab-content">
+      <input hidden="true" type="text" ng-model="name" class="message-name" required />
+    </div>
+    <div id="tab-content-room" class="message-tab-content">
+      
+    </div>
+
+    <input hidden="true" type="text" class="message-color" ng-model="color" required />
     <input hidden="true" type="text" class="message-field" />
-    <button class="message-submit">Send</button>
   </form>        
 </section>

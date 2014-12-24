@@ -1,15 +1,8 @@
-randomWordUrl = 'randomword.setgetgo.com'
-
 http = require 'http'
-
-options = 
-  host: randomWordUrl
-  port: 80
-  path: '/get.php'
-
 
 class Chatroom
   @rooms = {}
+  
   constructor: (name, password)->
     if password? && name?
       @name     = name

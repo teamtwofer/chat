@@ -1,7 +1,7 @@
 <ul class="messages-holder">
   <li ng-repeat="message in messages track by $index" class="message">
     <div class="message-author" ng-style="styleColor('{{message.color}}')">{{message.author}}</div>
-    <div class="message-body" ng-bind-html="sendBody(message.body)"></div>
     <timeago class="message-timestamp" time="message.timestamp"></timeago>
+    <div class="message-body" ng-bind-html="sendBody(message.body)"></div>
   </li>
 </ul>

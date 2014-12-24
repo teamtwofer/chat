@@ -45,8 +45,6 @@ app.controller "MessagesController", ["$scope", "$rootScope", "$sce", "$window",
     console.log("user is focused")
     document.title = "Twofer Chat!"
 
-
-
   setInterval( () =>
     # console.log("unread messages")
     if !userIsFocused && unreadMessages
@@ -143,7 +141,8 @@ app.controller "RoomController", ["$scope", "$http", "$location", "$routeParams"
     # console.log("e.keyCode='#{e.keyCode}'");
     if (e.shiftKey) 
       $scope.isShiftDown = true
-    if (e.keyCode == 13 && $scope.isShiftDown != true) 
+    if (e.keyCode == 13 && $scope.isShiftDown != true)
+      e.preventDefault()
       $scope.createNewMessage()
 
   $scope.keyReleased = (e) ->
@@ -160,7 +159,7 @@ app.controller "RoomController", ["$scope", "$http", "$location", "$routeParams"
       "chatroom": $scope.roomName
       "name":     $scope.name
       "color":    $scope.color
-    $scope.messageText = ""
+    $scope.messageText = "";
 ]
 
 angular.module('chat').directive 'timeago', ->

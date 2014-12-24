@@ -1,0 +1,22 @@
+.message {
+  & + & {
+    margin-top: 10px;
+  }
+}
+
+.message-author {
+  display: inline-block;
+  font-weight: bold;
+}
+
+.message-timestamp {
+  display: inline-block;
+  margin: 0 10px;
+  color: #999;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.message-body {
+  display: block;
+}

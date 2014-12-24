@@ -1,73 +1,16 @@
+.chatroom {
+  @include position(absolute, 0 0 0 0);
+}
+
+$form-height: 80px;
+
 .messages-holder {
-  padding: 15px;
-  list-style-type: none;
-  margin-bottom: 70px;
-  li {
-    margin-bottom: 10px;
-  }
+  padding: 20px 20px ($form-height + 20px);
 }
 
-.message-form {
-  display: flex;
-  display: -webkit-flex;
-  padding: 10px;
-
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  background-color: #eee;
-}
-
-%message-input {
-  display: block;
-  height: 50px;
+.message-form-container {
+  @include position(fixed, null 0 0 0);
+  height: $form-height;
+  padding: 0 20px 30px;
   background-color: #fff;
-  margin-right: 10px;
-  padding: 5px;
-  border: none;
-  -webkit-appearance: none;
-}
-
-.message-input {
-  flex: 2;
-  -webkit-flex: 2;
-
-  @extend %message-input;
-}
-
-.message-name {
-  width: 100px;
-
-  @extend %message-input;
-}
-
-.message-field {
-  display: none;
-}
-
-.message-submit {
-  width: 100px;
-  height: 50px;
-
-  background-color: #b47892;
-  border: 0;
-  color: #fff;
-  font-family: $font-sans;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-
-.message-author {
-  font-weight: 700;
-  display: inline-block;
-  margin-right: 15px;
-}
-
-.message-timestamp {
-  font-size: .75em;
-  margin: 10px 0px;
 }
